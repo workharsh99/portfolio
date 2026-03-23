@@ -2,18 +2,50 @@ import React, { useState } from 'react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate form submission
-    alert('Thank you for reaching out! This is a UI demo.');
-    setFormData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    // Replace with your actual Web3Forms Access Key
+    // Get one for free at https://web3forms.com/
+    const access_key = '5e03e919-eb6d-4850-9b7c-e887f6d2272d';
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: access_key,
+          ...formData
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus(null), 5000);
+    }
   };
 
   return (
     <section id="contact" className="py-24 relative overflow-hidden">
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] -z-10 transform -translate-x-1/2 translate-y-1/2"></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16 animate-fade-in">
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-4">
@@ -24,7 +56,7 @@ const Contact = () => {
 
         <div className="glass p-8 md:p-12 rounded-3xl animate-fade-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-            
+
             {/* Contact Details */}
             <div className="space-y-10">
               <div>
@@ -59,10 +91,10 @@ const Contact = () => {
               {/* Social Icons */}
               <div className="pt-8 flex gap-4">
                 <a href="https://linkedin.com/in/workharsh99" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full glass hover:bg-accent hover:-translate-y-1 transition-all duration-300 flex items-center justify-center hover:shadow-[0_0_20px_rgba(56,189,248,0.5)]">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>
                 </a>
                 <a href="https://github.com/workharsh99" target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full glass hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 flex items-center justify-center hover:shadow-[0_0_20px_rgba(255,255,255,0.5)]">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" /></svg>
                 </a>
               </div>
             </div>
@@ -75,7 +107,7 @@ const Contact = () => {
                   type="text"
                   id="name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
                   className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors duration-300"
                   placeholder="John Doe"
@@ -87,7 +119,7 @@ const Contact = () => {
                   type="email"
                   id="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
                   className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors duration-300"
                   placeholder="john@example.com"
@@ -98,7 +130,7 @@ const Contact = () => {
                 <textarea
                   id="message"
                   value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   required
                   rows="4"
                   className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors duration-300 resize-none"
@@ -107,10 +139,27 @@ const Contact = () => {
               </div>
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl bg-accent text-background font-bold text-lg hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.6)]"
+                disabled={isSubmitting}
+                className="w-full py-4 rounded-xl bg-accent text-background font-bold text-lg hover:bg-white transition-all duration-300 shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_25px_rgba(255,255,255,0.6)] disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                Send Message
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
+
+              {submitStatus === 'success' && (
+                <div className="p-4 rounded-xl bg-green-500/20 border border-green-500/50 text-green-400 text-center animate-fade-in">
+                  Message sent successfully! I'll get back to you soon.
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 rounded-xl bg-red-500/20 border border-red-500/50 text-red-400 text-center animate-fade-in">
+                  Oops! Something went wrong. Please check your Access Key or try again later.
+                </div>
+              )}
+              {submitStatus === 'missing_key' && (
+                <div className="p-4 rounded-xl bg-yellow-500/20 border border-yellow-500/50 text-yellow-500 text-center animate-fade-in font-medium">
+                  Oops! You forgot to add your Web3Forms Access Key. Please open <span className="font-mono bg-black/20 px-2 py-1 rounded">Contact.jsx</span> and replace <span className="font-mono bg-black/20 px-2 py-1 rounded">'YOUR_WEB3FORMS_ACCESS_KEY'</span> with your actual key from https://web3forms.com/.
+                </div>
+              )}
             </form>
 
           </div>
