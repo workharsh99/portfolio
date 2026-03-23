@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import cv from '../assets/Harsh_Kumar_CV.pdf';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -32,7 +33,7 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+            <div className="ml-10 flex items-center space-x-8">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
@@ -42,6 +43,13 @@ const Navbar = () => {
                   {link.name}
                 </a>
               ))}
+              <a
+                href={cv}
+                download="Harsh_Kumar_CV.pdf"
+                className="bg-accent/10 border border-accent/20 text-accent hover:bg-accent hover:text-white transition-all duration-300 px-4 py-2 rounded-full font-medium"
+              >
+                Download CV
+              </a>
             </div>
           </div>
           
@@ -65,7 +73,7 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-background/95 backdrop-blur-md border-b border-white/10">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          <div className="px-2 pt-2 pb-3 flex flex-col space-y-1 sm:px-3">
             {navLinks.map((link) => (
               <a
                 key={link.name}
@@ -76,6 +84,14 @@ const Navbar = () => {
                 {link.name}
               </a>
             ))}
+            <a
+              href={cv}
+              download="Harsh_Kumar_CV.pdf"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-accent hover:bg-accent hover:text-white block px-3 py-2 mt-2 border border-accent rounded-md text-base font-medium text-center transition-colors"
+            >
+              Download CV
+            </a>
           </div>
         </div>
       )}
